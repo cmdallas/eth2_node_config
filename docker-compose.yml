@@ -1,0 +1,80 @@
+version: "3.3"
+
+services:
+  traefik:
+    image: "traefik:v2.5"
+    container_name: "traefik"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=true"
+      - "--entryPoints.lighthouse.address=0.0.0.0:5052"
+      - "--entryPoints.geth.address=0.0.0.0:8545"
+    ports:
+      - "80:80"
+      - "5052:5052" # lighthouse
+      - "8080:8080"
+      - "8545:8545" # geth
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  geth:
+    image: ethereum/client-go:v1.10.9
+    container_name: geth
+    restart: unless-stopped
+    volumes:
+      - ./chaindata:/chaindata
+    stop_signal: SIGINT
+    stop_grace_period: 1m
+    command:
+      - --goerli
+      - --syncmode
+      - "light"
+      - --http
+      - --http.addr
+      - "0.0.0.0"
+      - --http.vhosts
+      - "*"
+      - --http.api
+      - "eth,net,web3"
+      - --ws
+      - --ws.addr
+      - "0.0.0.0"
+      - --ws.origins
+      - "*"
+      - --ws.api
+      - "eth,net,web3"
+      - --datadir
+      - "/goerli"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "10"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.geth.loadbalancer.server.port=8545"
+      - "traefik.http.routers.geth.entrypoints=geth"
+      - "traefik.http.routers.geth.rule=Host(`dev.chainlayer.geth`)"
+
+  lighthouse:
+    image: "sigp/lighthouse"
+    container_name: "lighthouse"
+    volumes:
+      - ./lighthouse:/root/.lighthouse
+    command:
+      - lighthouse
+      - --network
+      - "pyrmont"
+      - beacon
+      - --http
+      - --http-address
+      - 0.0.0.0
+      - --eth1-endpoints
+      - http://geth:8545/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.lighthouse.loadbalancer.server.port=5052"
+      - "traefik.http.routers.lighthouse.entrypoints=lighthouse"
+      - "traefik.http.routers.lighthouse.rule=Host(`dev.chainlayer.lighthouse`)"

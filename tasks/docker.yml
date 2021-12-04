@@ -1,0 +1,9 @@
+---
+- name: Update repo cache and install deps
+  apt:
+    update_cache: yes
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
