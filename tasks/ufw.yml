@@ -1,0 +1,19 @@
+---
+- name: UFW - allow SSH
+  become: yes
+  ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: UFW - turn on
+  become: yes
+  ufw:
+    state: enabled
+  
+- name: UFW - proxy access
+  become: yes
+  ufw:
+    rule: allow
+    port: "80,5052,8080,8545"
+    proto: tcp
+  tags: ufw_proxy_access
