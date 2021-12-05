@@ -1,11 +1,11 @@
 ---
-- name: Update apt cache
+- name: Docker - Update apt cache
   apt: update_cache=yes cache_valid_time=3600
 
-- name: Upgrade all apt packages
+- name: Docker - Upgrade all apt packages
   apt: upgrade=dist
 
-- name: Install dependencies
+- name: Docker - Install dependencies
   apt:
     name: "{{ packages }}"
     state: present
@@ -18,17 +18,17 @@
     - software-properties-common
     - gnupg-agent
  
-- name: Add an apt signing key for Docker
+- name: Docker - Add an apt signing key
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
-- name: Add apt repository for stable version
+- name: Docker - Add apt repository for stable version
   apt_repository:
     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
     state: present
 
-- name: Install Docker
+- name: Docker - Install
   apt:
     name: "{{ packages }}"
     state: present
@@ -39,32 +39,32 @@
     - docker-ce-cli
     - containerd.io
 
-- name: Add user to docker group
+- name: Docker - Add user to docker group
   user:
     name: "{{ansible_user}}"
     group: docker
 
-- name: Download docker-compose {{ docker_compose_version }}
+- name: Docker - Download docker-compose {{ docker_compose_version }}
   get_url:
     url : https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-x86_64
     dest: ~/docker-compose
     mode: '+x'
 
-- name: Check docker-compose exists
+- name: Docker - Check docker-compose exists
   stat: path=~/docker-compose
   register: docker_compose
 
-- name: Move docker-compose to /usr/local/bin/docker-compose
+- name: Docker - Move docker-compose to /usr/local/bin/docker-compose
   command: mv ~/docker-compose /usr/local/bin/docker-compose
   when: docker_compose.stat.exists
 
-- name: Create etc dir for compose artifact
+- name: Docker - Create etc dir for compose artifacts
   file:
     path: /etc/docker/compose/
     state: directory
     mode: '0755'
 
-- name: chainlayer_node - install systemd service
+- name: Docker - install chainlayer_node  systemd service
   become: yes
   copy:
     src: files/systemd/chainlayer_node.service
@@ -73,15 +73,16 @@
     group: root
     mode: 0600
 
-- name: Copy docker-compose.yml
+- name: Docker - Copy docker-compose.yml
   become: yes
   copy:
     src: docker-compose.yml
     dest: /etc/docker/compose/docker-compose.yml
     force: yes
 
-- name: start chainlayer_node
+- name: Docker - start chainlayer_node
   become: yes
   systemd:
+    enabled: yes
     state: started
     name: chainlayer_node

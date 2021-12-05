@@ -1,7 +1,7 @@
 [Unit]
 Description=chainlayer_node
 Requires=docker.service
-After=docker.service network.target
+After=docker.service
 
 [Service]
 User=root
@@ -10,7 +10,6 @@ Type=oneshot
 RemainAfterExit=yes
 Restart=on-failure
 TimeoutStartSec=0
-StartLimitIntervalSec=60
 StartLimitBurst=3
 WorkingDirectory=/etc/docker/compose/%i
 ExecStart=/usr/local/bin/docker-compose up -d --remove-orphans --force-recreate
