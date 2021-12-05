@@ -25,3 +25,12 @@
     name: grafana-server
     enabled: yes
     state: started
+
+# Has some issues using the prom datasource.
+# For now, just manually import the dashboard: 1860
+#
+# - name: Import node exporter dashboard
+#   grafana_dashboard:
+#     grafana_url: http://localhost:3000
+#     dashboard_id: 1860
+#   tags: dash

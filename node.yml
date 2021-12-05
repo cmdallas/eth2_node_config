@@ -14,6 +14,7 @@
           - curl
           - gnupg
           - lsb-release
+          - net-tools
         state: latest
         update_cache: yes
     
@@ -33,3 +34,7 @@
     - import_tasks: tasks/docker.yml
 
     - import_tasks: tasks/ufw.yml
+
+    - import_tasks: tasks/prom.yml
+
+    - import_tasks: tasks/grafana.yml

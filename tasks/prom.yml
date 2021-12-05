@@ -1,0 +1,132 @@
+---
+- name: create dedicated user for metrics
+  become: yes
+  user:
+    name: metrics
+    create_home: no
+    home: /nonexistent
+    shell: /bin/false
+
+- name: prepare workspace for metrics user
+  become: yes
+  file:
+    path: /var/lib/metrics
+    state: directory
+    recurse: yes
+    mode: o-rwx
+    owner: metrics
+    group: metrics
+
+# Prometheus
+
+- name: Prometheus - download tarball
+  become: yes
+  get_url:
+    url: https://github.com/prometheus/prometheus/releases/download/v2.21.0/prometheus-2.21.0.linux-amd64.tar.gz
+    dest: /var/lib/metrics/prometheus-2.21.0.linux-amd64.tar.gz
+    checksum: sha256:f1f2eeabbf7822572dce67565dc96ffaa2dd1897dd1d844562552b11123f151a
+    owner: metrics
+    group: metrics
+
+- name: Prometheus - extract tarball
+  become: yes
+  unarchive:
+    src: /var/lib/metrics/prometheus-2.21.0.linux-amd64.tar.gz
+    dest: /var/lib/metrics
+    remote_src: yes
+    owner: metrics
+    group: metrics
+
+- name: Prometheus - symlink without version
+  become: yes
+  file:
+    src: /var/lib/metrics/prometheus-2.21.0.linux-amd64
+    dest: /var/lib/metrics/prometheus
+    state: link
+    owner: metrics
+    group: metrics
+
+- name: Prometheus - upload prometheus.yml
+  become: yes
+  copy:
+    src: files/prometheus.yml
+    dest: /var/lib/metrics/prometheus/prometheus.yml
+    force: yes
+    owner: metrics
+    group: metrics
+
+- name: Prometheus - install systemd service
+  become: yes
+  copy:
+    src: files/systemd/prometheus.service
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Prometheus - cleanup
+  become: yes
+  file:
+    path: /var/lib/metrics/prometheus-2.21.0.linux-amd64.tar.gz
+    state: absent
+
+- name: start prom
+  become: yes
+  systemd:
+    state: started
+    name: prometheus
+
+# Node Exporter
+
+- name: node_exporter - download tarball
+  become: yes
+  get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
+    dest: /var/lib/metrics/node_exporter-1.0.1.linux-amd64.tar.gz
+    checksum: sha256:3369b76cd2b0ba678b6d618deab320e565c3d93ccb5c2a0d5db51a53857768ae
+    owner: metrics
+    group: metrics
+
+- name: node_exporter - extract tarball
+  become: yes
+  unarchive:
+    src: /var/lib/metrics/node_exporter-1.0.1.linux-amd64.tar.gz
+    dest: /var/lib/metrics/
+    remote_src: yes
+    owner: metrics
+    group: metrics
+
+- name: node_exporter - symlink without version
+  become: yes
+  file:
+    src: /var/lib/metrics/node_exporter-1.0.1.linux-amd64
+    dest: /var/lib/metrics/node_exporter
+    state: link
+    owner: metrics
+    group: metrics
+
+- name: node_exporter - install systemd service
+  become: yes
+  copy:
+    src: files/systemd/node_exporter.service
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: 0600
+
+- name: node_explorer - cleanup
+  become: yes
+  file:
+    path: /var/lib/metrics/node_exporter-1.0.1.linux-amd64.tar.gz
+    state: absent
+
+- name: systemd daemon-reload
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+- name: start node exporter
+  become: yes
+  systemd:
+    state: started
+    name: node_exporter
