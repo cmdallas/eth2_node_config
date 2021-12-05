@@ -18,11 +18,14 @@ services:
       - "8545:8545" # geth
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    logging:
+      driver: syslog
+      options:
+        tag: "traefik"
 
   geth:
     image: ethereum/client-go:v1.10.9
     container_name: geth
-    restart: unless-stopped
     volumes:
       - ./chaindata:/chaindata
     stop_signal: SIGINT
@@ -48,10 +51,13 @@ services:
       - --datadir
       - "/goerli"
     logging:
-      driver: "json-file"
+      driver: syslog
       options:
-        max-size: "2m"
-        max-file: "10"
+        tag: "geth"
+      # driver: "json-file"
+      # options:
+      #   max-size: "2m"
+      #   max-file: "10"
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.geth.loadbalancer.server.port=8545"
@@ -78,3 +84,7 @@ services:
       - "traefik.http.services.lighthouse.loadbalancer.server.port=5052"
       - "traefik.http.routers.lighthouse.entrypoints=lighthouse"
       - "traefik.http.routers.lighthouse.rule=Host(`dev.chainlayer.lighthouse`)"
+    logging:
+      driver: syslog
+      options:
+        tag: "lighthouse"

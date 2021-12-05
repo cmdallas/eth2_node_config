@@ -57,3 +57,31 @@
 - name: Move docker-compose to /usr/local/bin/docker-compose
   command: mv ~/docker-compose /usr/local/bin/docker-compose
   when: docker_compose.stat.exists
+
+- name: Create etc dir for compose artifact
+  file:
+    path: /etc/docker/compose/
+    state: directory
+    mode: '0755'
+
+- name: chainlayer_node - install systemd service
+  become: yes
+  copy:
+    src: files/systemd/chainlayer_node.service
+    dest: /etc/systemd/system/chainlayer_node.service
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Copy docker-compose.yml
+  become: yes
+  copy:
+    src: docker-compose.yml
+    dest: /etc/docker/compose/docker-compose.yml
+    force: yes
+
+- name: start chainlayer_node
+  become: yes
+  systemd:
+    state: started
+    name: chainlayer_node

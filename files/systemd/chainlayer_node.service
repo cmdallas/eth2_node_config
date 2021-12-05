@@ -1,0 +1,20 @@
+[Unit]
+Description=chainlayer_node
+Requires=docker.service
+After=docker.service network.target
+
+[Service]
+User=root
+Group=docker
+Type=oneshot
+RemainAfterExit=yes
+Restart=on-failure
+TimeoutStartSec=0
+StartLimitIntervalSec=60
+StartLimitBurst=3
+WorkingDirectory=/etc/docker/compose/%i
+ExecStart=/usr/local/bin/docker-compose up -d --remove-orphans --force-recreate
+ExecStop=/usr/local/bin/docker-compose down
+
+[Install]
+WantedBy=multi-user.target
