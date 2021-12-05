@@ -93,6 +93,7 @@
     src: files/docker-compose.yml
     dest: /etc/docker/compose/docker-compose.yml
     force: yes
+  tags: compose
 
 - name: Docker - start chainlayer_node
   become: yes

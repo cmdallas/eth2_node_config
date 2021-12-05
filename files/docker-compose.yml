@@ -9,8 +9,8 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=true"
-      - --providers.file.directory=/traefik/
-      - --providers.file.watch=true
+      - "--providers.file.directory=/traefik/"
+      - "--providers.file.watch=true"
       - "--entryPoints.lighthouse.address=0.0.0.0:5052"
       - "--entryPoints.geth.address=0.0.0.0:8545"
     ports:
@@ -66,6 +66,7 @@ services:
       - "traefik.http.services.geth.loadbalancer.server.port=8545"
       - "traefik.http.routers.geth.entrypoints=geth"
       - "traefik.http.routers.geth.rule=Host(`dev.chainlayer.geth`)"
+      - "traefik.http.routers.geth.tls=true"
 
   lighthouse:
     image: "sigp/lighthouse"
@@ -87,6 +88,7 @@ services:
       - "traefik.http.services.lighthouse.loadbalancer.server.port=5052"
       - "traefik.http.routers.lighthouse.entrypoints=lighthouse"
       - "traefik.http.routers.lighthouse.rule=Host(`dev.chainlayer.lighthouse`)"
+      - "traefik.http.routers.lighthouse.tls=true"
     logging:
       driver: syslog
       options:
