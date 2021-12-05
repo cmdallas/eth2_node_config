@@ -1,16 +1,18 @@
-# Chainlayer Node Config
+# ⛓️ Chainlayer Node Config
 
-## Configuring Nodes
+## 🔧 Configuring Nodes
 
 Target hosts are configure in `inventory/hosts.yml`
+
+To apply the configuration run:
 
 ```bash
 ./bin/main.sh
 ```
 
-## Testing
+## ⚗️ Testing
 
-### Services
+### 🤖 Services
 
 ```bash
 HOST=54.212.130.3
@@ -25,13 +27,15 @@ curl -kX POST https://${HOST}:8545 \
    --data '{"jsonrpc":"2.0", "method":"eth_getBalance", "params":["0x0000000000000000000000000000000000000000","latest"], "id":1}'
 ```
 
-### Grafana
+### 📈 Grafana
 
 Navigate to `http://{HOST}:3000` in a web browser.
 
-### PKI
+---
 
-#### Provisioning
+## Misc
+
+#### 🔑 PKI Provisioning
 
 ```bash
 openssl req \
