@@ -32,13 +32,3 @@ curl -kX POST https://${HOST}:8545 \
 Navigate to `http://{HOST}:3000` in a web browser.
 
 ---
-
-## Misc
-
-#### 🔑 PKI Provisioning
-
-```bash
-openssl req \
-    -newkey rsa:2048 -nodes -keyout cl.pem \
-    -out cl.csr
-```
