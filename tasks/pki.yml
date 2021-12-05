@@ -1,0 +1,23 @@
+- name: PKI - Upload csr
+  become: yes
+  copy:
+    src: files/pki/cl.csr
+    dest: /etc/ssl/certs/cl.csr
+    force: yes
+  tags: pki
+
+- name: PKI - Upload pem
+  become: yes
+  copy:
+    src: files/pki/cl.pem
+    dest: /etc/ssl/private/cl.pem
+    force: yes
+  tags: pki
+
+- name: PKI - Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: /etc/ssl/certs/cl.crt
+    privatekey_path: /etc/ssl/private/cl.pem
+    csr_path: /etc/ssl/certs/cl.csr
+    provider: selfsigned
+  tags: pki

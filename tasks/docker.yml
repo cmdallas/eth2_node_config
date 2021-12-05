@@ -64,7 +64,7 @@
     state: directory
     mode: '0755'
 
-- name: Docker - install chainlayer_node  systemd service
+- name: Docker - install chainlayer_node systemd service
   become: yes
   copy:
     src: files/systemd/chainlayer_node.service
@@ -73,10 +73,24 @@
     group: root
     mode: 0600
 
+- name: Docker - Create Traefik config directory
+  become: yes
+  file:
+    path: /usr/local/etc/traefik/
+    state: directory
+
+- name: Docker - Copy Traefik config
+  become: yes
+  copy:
+    src: files/traefik/certificates.toml
+    dest: /usr/local/etc/traefik/certificates.toml
+    force: yes
+  tags: pki
+
 - name: Docker - Copy docker-compose.yml
   become: yes
   copy:
-    src: docker-compose.yml
+    src: files/docker-compose.yml
     dest: /etc/docker/compose/docker-compose.yml
     force: yes
 

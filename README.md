@@ -1,5 +1,13 @@
 # Chainlayer Node Config
 
+## Configuring Nodes
+
+Target hosts are configure in `inventory/hosts.yml`
+
+```bash
+./bin/main.sh
+```
+
 ## Testing
 
 ### Services
@@ -20,3 +28,11 @@ curl -X POST http://${HOST}:8545 \
 ### Grafana
 
 Navigate to `http://{HOST}:3000` in a web browser.
+
+### PKI
+
+```bash
+openssl req \
+    -newkey rsa:2048 -nodes -keyout cl.key \
+    -out cl.csr
+```

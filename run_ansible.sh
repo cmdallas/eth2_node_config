@@ -1,1 +1,0 @@
-ansible-playbook -i inventory.yml node.yml --private-key=~/m1.pem --user ubuntu

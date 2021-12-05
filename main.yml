@@ -1,0 +1,14 @@
+---
+- name: Chainlayer ETH2 Node Playbook
+  hosts: all
+  become: yes
+  vars:
+    docker_compose_version: "v2.2.2"
+  user: ubuntu
+  tasks:
+    - import_tasks: tasks/setup.yml
+    - import_tasks: tasks/pki.yml
+    - import_tasks: tasks/docker.yml
+    - import_tasks: tasks/ufw.yml
+    - import_tasks: tasks/prom.yml
+    - import_tasks: tasks/grafana.yml

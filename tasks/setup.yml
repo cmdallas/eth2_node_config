@@ -1,0 +1,26 @@
+---
+- name: Setup - Update apt
+  become: yes
+  apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - net-tools
+      - network-manager
+    state: latest
+    update_cache: yes
+
+- name: Setup - Install chrony for smoother time sync
+  become: yes
+  apt:
+    name: chrony
+    state: latest
+
+- name: Setup - Start and enable chrony service
+  become: yes
+  systemd:
+    name: chrony
+    state: started
+    enabled: yes
