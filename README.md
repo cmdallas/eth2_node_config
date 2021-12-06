@@ -46,10 +46,10 @@ To apply the configuration run:
 ### 🤖 Services
 
 ```bash
-HOST=54.212.130.3
+HOST=209.94.56.220
 
 # Lighhouse
-curl -kH "Host:dev.chainlayer.lighthouse" https://${HOST}:45052/eth/v1/config/spec
+curl -kH "Host:dev.chainlayer.lighthouse" https://${HOST}:5052/eth/v1/config/spec
 
 # GETH
 curl -kX POST https://${HOST}:8545 \

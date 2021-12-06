@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-ansible-playbook -i inventory/hosts.yml main.yml --private-key=~/m1.pem --user ubuntu
+
+# Normally we wouldn't use a password.
+ansible-playbook -i inventory/hosts.yml main.yml --user root --ask-pass

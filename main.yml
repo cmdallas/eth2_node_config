@@ -4,7 +4,7 @@
   become: yes
   vars:
     docker_compose_version: "v2.2.2"
-  user: ubuntu
+  user: root
   tasks:
     - import_tasks: tasks/setup.yml
     - import_tasks: tasks/pki.yml
